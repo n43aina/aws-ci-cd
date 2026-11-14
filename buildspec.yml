@@ -28,7 +28,6 @@ phases:
   build:
     commands:
       - echo "Running tests..."
-      - cd aws-ci-cd/
       - echo "Building Docker image..."
       - docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-python-flask-app:latest" .
       - echo "Pushing Docker image..."
