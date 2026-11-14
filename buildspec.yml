@@ -1,3 +1,4 @@
+
 version: 0.2
 
 env:
@@ -5,27 +6,39 @@ env:
     DOCKER_REGISTRY_USERNAME: /docker-credentials/username
     DOCKER_REGISTRY_PASSWORD: /docker-credentials/password
     DOCKER_REGISTRY_URL: /docker-registry/url
+
 phases:
   install:
     runtime-versions:
       python: 3.11
+    commands:
+      - echo "Checking Python version..."
+      - python --version
+      - echo "Checking pip version..."
+      - pip --version
+
   pre_build:
     commands:
       - echo "Installing dependencies..."
+      - pip install --upgrade pip
       - pip install -r aws-ci-cd/requirements.txt
+      - echo "Logging in to Docker registry..."
+      - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
+
   build:
     commands:
       - echo "Running tests..."
       - cd aws-ci-cd/
       - echo "Building Docker image..."
-      - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
       - docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-python-flask-app:latest" .
+      - echo "Pushing Docker image..."
       - docker push "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-python-flask-app:latest"
+
   post_build:
     commands:
       - echo "Build completed successfully!"
+
 artifacts:
   files:
     - '**/*'
   base-directory: aws-ci-cd
-
