@@ -1,8 +1,15 @@
 #!/bin/bash
 set -e
 
-# Pull the Docker image from Docker Hub
+echo "Pulling Docker image..."
+
 docker pull admin153/python-app:latest
 
-# Run the Docker image as a container
-docker run -d -p 5000:5000 admin153/python-app:latest
+echo "Starting Docker container..."
+
+docker run -d \
+  --name python-app \
+  -p 5000:5000 \
+  admin153/python-app:latest
+
+echo "Application started successfully"
