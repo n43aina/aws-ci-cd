@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# Stop the existing Docker container
+echo "Stopping existing Docker container..."
+
 docker stop python-app || true
 
-# Remove the existing container
 docker rm python-app || true
 
+echo "Application stopped successfully"
 exit 0
